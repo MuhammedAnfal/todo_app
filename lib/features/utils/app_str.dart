@@ -2,11 +2,11 @@ class AppStrings {
   static const String mainTitle = 'My Tasks';
   static const String deletedTask = 'This Task Was Deleted';
   static const String doneAllTask = 'You Have Done All Tasks!';
-  static const String addNewTask = 'Add New Task';
+  static const String addNewTask = 'Add New ';
   static const String updateCurrentTask = 'Update';
   static const String taskString = 'Task';
-  static const String titleOfTextField = 'No data available.';
-  static const String noDataMessage = 'What Are You Planning?';
+  static const String titleOfTextField = 'What Are You Planning?';
+  static const String noDataMessage = 'No data available.';
   static const String addNote = 'Add Note';
   static const String timeString = 'Time';
   static const String dateString = 'Date';
