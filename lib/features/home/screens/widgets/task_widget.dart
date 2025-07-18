@@ -1,51 +1,96 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:todo_app/features/extension/size_extension.dart';
+import 'package:todo_app/features/models/task.dart';
+import 'package:todo_app/features/tasks/screens/taskview.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/main.dart';
 
-class TaskWidget extends StatelessWidget {
-  const TaskWidget({super.key, required this.theme});
+class TaskWidget extends StatefulWidget {
+  const TaskWidget({super.key, required this.theme, required this.task});
 
+  //-- variables
   final TextTheme theme;
+  final Task task;
+
+  @override
+  State<TaskWidget> createState() => _TaskWidgetState();
+}
+
+class _TaskWidgetState extends State<TaskWidget> {
+  //-- variables
+  TextEditingController titleController = TextEditingController();
+  TextEditingController subTitleController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    titleController.text = widget.task.title;
+    subTitleController.text = widget.task.description;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    titleController.dispose();
+    subTitleController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => Taskview(
+                  descriptionController: subTitleController,
+                  titleController: titleController,
+                ),
+          ),
+        );
+      },
       child: AnimatedContainer(
-        margin: EdgeInsets.symmetric(horizontal: w * 0.05, vertical: h * 0.01),
+        margin: EdgeInsets.symmetric(horizontal: context.w * 0.05, vertical: context.h * 0.01),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
-          boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 5, offset: Offset(0, 3))],
+          boxShadow: const [
+            BoxShadow(color: Colors.grey, blurRadius: 5, offset: Offset(0, 3)),
+          ],
         ),
         duration: Duration(milliseconds: 300),
         child: ListTile(
           leading: GestureDetector(
             onTap: () {},
             child: Padding(
-              padding: EdgeInsets.only(bottom: h * 0.03),
+              padding: EdgeInsets.only(bottom: context.h * 0.03),
               child: AnimatedContainer(
-                width: w * 0.2,
+                width: context.w * 0.2,
                 duration: Duration(milliseconds: 600),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryColor,
+                  color: widget.task.isCompleted ? AppColors.primaryColor : AppColors.white,
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.grey, width: 0.8),
                 ),
-                child: Icon(Icons.check, color: Colors.white, size: h * 0.03),
+                child: Icon(Icons.check, color: Colors.white, size: context.h * 0.03),
               ),
             ),
           ),
           //-- task title
           title: Padding(
-            padding: EdgeInsets.only(top: h * 0.01, bottom: h * 0.005),
+            padding: EdgeInsets.only(top: context.h * 0.01, bottom: context.h * 0.005),
             child: Text(
-              'Done',
+              titleController.text.toString(),
               style: GoogleFonts.poppins(
-                textStyle: theme.displayMedium,
-                fontSize: w * 0.04,
-                color: Colors.black,
+                decoration: widget.task.isCompleted ? TextDecoration.lineThrough : null,
+                textStyle: widget.theme.displayMedium,
+                fontSize: context.w * 0.04,
+                color: widget.task.isCompleted ? AppColors.primaryColor : AppColors.black,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -56,30 +101,39 @@ class TaskWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Description',
+                subTitleController.text.toString(),
                 style: GoogleFonts.poppins(
-                  textStyle: theme.displaySmall,
-                  fontSize: w * 0.033,
-                  color: Colors.grey,
+                  decoration: widget.task.isCompleted ? TextDecoration.lineThrough : null,
+                  textStyle: widget.theme.displaySmall,
+                  fontSize: context.w * 0.033,
+                  color: widget.task.isCompleted ? AppColors.primaryColor : AppColors.black,
                   fontWeight: FontWeight.w300,
                 ),
               ),
 
               //-- dates
               Padding(
-                padding: EdgeInsets.only(top: h * 0.01, right: w * 0.02),
+                padding: EdgeInsets.only(top: context.h * 0.01, right: context.w * 0.02),
                 child: Align(
                   alignment: Alignment.topRight,
 
                   child: Column(
                     children: [
                       Text(
-                        'Date',
-                        style: GoogleFonts.poppins(textStyle: theme.displaySmall, fontSize: w * 0.03, color: Colors.grey),
+                        DateFormat('hh : mm a').format(widget.task.createdAtDate),
+                        style: GoogleFonts.poppins(
+                          textStyle: widget.theme.displaySmall,
+                          fontSize: context.w * 0.03,
+                          color: Colors.grey,
+                        ),
                       ),
                       Text(
-                        'Sub Date',
-                        style: GoogleFonts.poppins(textStyle: theme.displaySmall, fontSize: w * 0.03, color: Colors.grey),
+                        DateFormat.yMMMEd().format(widget.task.createdTime),
+                        style: GoogleFonts.poppins(
+                          textStyle: widget.theme.displaySmall,
+                          fontSize: context.w * 0.03,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),

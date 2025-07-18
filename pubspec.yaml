@@ -63,6 +63,7 @@ dependencies:
 
   # date picker
   flutter_cupertino_date_picker_fork: ^1.0.7
+  bottom_picker: ^3.2.1
 
   # font
   google_fonts: ^6.2.1
@@ -70,6 +71,9 @@ dependencies:
   # state management
   riverpod: ^2.6.1
   flutter_riverpod: ^2.6.1
+  
+  # icons
+  iconsax: ^0.0.8
 
    
 

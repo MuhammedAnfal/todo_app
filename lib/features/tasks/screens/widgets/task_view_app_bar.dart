@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/main.dart';
 
 class TaskViewAppBar extends StatefulWidget implements PreferredSizeWidget {
   const TaskViewAppBar({super.key});
   @override
-  Size get preferredSize => Size.fromHeight(h * 0.1);
+  Size get preferredSize => Size.fromHeight(150);
   @override
   State<TaskViewAppBar> createState() => _TaskViewAppBarState();
 }
@@ -20,7 +21,7 @@ class _TaskViewAppBarState extends State<TaskViewAppBar> {
       child: Row(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: w * 0.025, top: h * 0.02),
+            padding: EdgeInsets.only(left: context.w * 0.025, top: context.h * 0.02),
             child: GestureDetector(
               onTap: () {
                 Navigator.pop(context);

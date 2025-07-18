@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/models/side_menu_model.dart';
 import 'package:todo_app/main.dart';
 
@@ -35,20 +36,35 @@ class _SideBarMenuItemsState extends ConsumerState<SideBarMenuItems> {
         // = ref.watch(widget.currentIndex) == widget.index;
       },
       child: AnimatedContainer(
-        transform: Matrix4.translationValues(ref.watch(widget.currentIndex) == widget.index ? -8 : 0, 0, 0),
-        transformAlignment: AlignmentGeometry.lerp(AlignmentDirectional.topStart, Alignment.topRight, 10),
+        transform: Matrix4.translationValues(
+          ref.watch(widget.currentIndex) == widget.index ? -8 : 0,
+          0,
+          0,
+        ),
+        transformAlignment: AlignmentGeometry.lerp(
+          AlignmentDirectional.topStart,
+          Alignment.topRight,
+          10,
+        ),
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        margin: EdgeInsets.symmetric(horizontal: w * 0.02, vertical: 4),
+        margin: EdgeInsets.symmetric(horizontal: context.w * 0.02, vertical: 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: ref.watch(widget.currentIndex) == widget.index ? Colors.blue : Colors.transparent,
+          color:
+              ref.watch(widget.currentIndex) == widget.index
+                  ? Colors.blue
+                  : Colors.transparent,
         ),
         child: ListTile(
           leading: Icon(widget.icon, color: Colors.white, size: 30),
           title: Text(
             widget.title,
-            style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w500, fontSize: w * 0.037),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: context.w * 0.037,
+            ),
           ),
         ),
       ),

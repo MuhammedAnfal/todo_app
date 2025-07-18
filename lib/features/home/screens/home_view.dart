@@ -1,17 +1,20 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/extension/space_extension.dart';
 import 'package:todo_app/features/home/screens/home_app_bar.dart';
 import 'package:todo_app/features/home/screens/slide_drawer.dart';
 import 'package:todo_app/features/home/screens/widgets/add_task_button.dart';
 import 'package:todo_app/features/home/screens/widgets/task_widget.dart';
+import 'package:todo_app/features/models/task.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
-import 'package:todo_app/features/utils/constants/lottie_constants.dart';
+import 'package:todo_app/features/utils/constants/image_constants.dart/lottie_constants.dart';
 import 'package:todo_app/main.dart';
 
 class HomeView extends ConsumerStatefulWidget {
@@ -23,7 +26,7 @@ class HomeView extends ConsumerStatefulWidget {
 
 class _HomeViewState extends ConsumerState<HomeView> {
   //-- variables
-  final List<int> tasks = [2, 3, 65, 8, 8, 98, 9, 9];
+  final List<int> tasks = [2];
   final GlobalKey<SliderDrawerState> sliderKey = GlobalKey<SliderDrawerState>();
 
   @override
@@ -31,31 +34,56 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final theme = Theme.of(context).textTheme;
     return Consumer(
       builder: (context, ref, child) {
-        return SliderDrawer(
-          key: sliderKey,
-          isDraggable: false,
-          animationDuration: 1000,
-          appBar: SizedBox(),
-          slider: CustomDrawer(),
-          child: Scaffold(
-            appBar: HomeAppBar(sliderKey: sliderKey),
-            backgroundColor: Colors.white,
-            floatingActionButton: AddTaskButton(),
-
-            //-- body
-            body: SingleChildScrollView(
-              child: SizedBox(
-                height: h,
-                width: w,
-                child: Padding(
-                  padding: EdgeInsets.only(right: w * 0.02, left: w * 0.02, bottom: w * 0.02),
+        //-- slide drawer
+        return Scaffold(
+          backgroundColor: Colors.white,
+          floatingActionButton: AddTaskButton(),
+          //-- body
+          body: SafeArea(
+            child: SizedBox(
+              height: context.h,
+              width: context.w,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  right: context.w * 0.02,
+                  left: context.w * 0.02,
+                  bottom: context.w * 0.02,
+                ),
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: h * 0.05),
+                        padding: EdgeInsets.only(top: context.h * 0.01),
                         child: SizedBox(
-                          height: h * 0.13,
-                          width: w,
+                          width: context.w,
+                          height: context.h * 0.1,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              //-- trash icon
+                              Padding(
+                                padding: EdgeInsets.only(right: context.w * 0.02),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    noTaskWarningDialog(context);
+                                  },
+                                  child: Icon(
+                                    CupertinoIcons.trash,
+                                    size: context.w * 0.06,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: context.h * 0.05),
+                        child: SizedBox(
+                          height: context.h * 0.13,
+                          width: context.w,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -81,12 +109,15 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       ),
 
                       //-- divider
-                      Padding(padding: EdgeInsets.only(top: h * 0.01), child: Divider(thickness: 2, indent: 60)),
+                      Padding(
+                        padding: EdgeInsets.only(top: context.h * 0.01),
+                        child: Divider(thickness: 2, indent: 60),
+                      ),
 
                       //-- tasks
                       SizedBox(
-                        width: w,
-                        height: h * 0.7,
+                        width: context.w,
+                        height: context.h * 0.7,
                         child:
                             tasks.isEmpty
                                 ? Column(
@@ -94,9 +125,12 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                   children: [
                                     FadeIn(
                                       child: SizedBox(
-                                        height: h * 0.3,
-                                        width: w,
-                                        child: Lottie.asset(LottieConstants.noTask, animate: tasks.isNotEmpty ? false : true),
+                                        height: context.h * 0.3,
+                                        width: context.w,
+                                        child: Lottie.asset(
+                                          ImageConstants.noTask,
+                                          animate: tasks.isNotEmpty ? false : true,
+                                        ),
                                       ),
                                     ),
                                     FadeInUp(from: 30, child: Text(AppStrings.doneAllTask)),
@@ -106,23 +140,45 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: tasks.length,
                                   itemBuilder: (context, index) {
+                                    //-- swipe to delete task
                                     return Dismissible(
                                       onDismissed: (_) {
-                                        //-- remove the task from db
+                                        tasks.removeAt(index);
+                                        setState(() {});
                                       },
                                       background: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
+                                          //-- icons color
                                           Icon(Icons.delete, color: Colors.grey),
+
+                                          //-- text
                                           Padding(
-                                            padding: EdgeInsets.only(left: w * 0.010),
-                                            child: Text(AppStrings.deletedTask, style: GoogleFonts.poppins(color: Colors.grey)),
+                                            padding: EdgeInsets.only(left: context.w * 0.010),
+                                            child: Text(
+                                              AppStrings.deletedTask,
+                                              style: GoogleFonts.poppins(color: Colors.grey),
+                                            ),
                                           ),
                                         ],
                                       ),
+
+                                      //-- swiping direction
                                       direction: DismissDirection.horizontal,
                                       key: Key(index.toString()),
-                                      child: TaskWidget(theme: theme),
+
+                                      //-- tile widget
+                                      child: TaskWidget(
+                                        theme: theme,
+                                        task: Task(
+                                          id: '1',
+                                          title: 'Home Task',
+                                          description: "cleaning the room",
+                                          createdTime: DateTime.now(),
+                                          createdAtDate: DateTime.now(),
+                                          isCompleted: false,
+                                        ),
+                                      ),
                                     );
                                   },
                                 ),

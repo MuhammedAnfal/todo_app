@@ -15,4 +15,6 @@ class AppStrings {
   static const String updateTaskString = 'Update Task';
   static const String oopMessage = 'Ooops!';
   static const String areYouSure = 'Are You Sure?';
+  static const String timeText = 'Time';
+  static const String deleteTAsk = 'Delete Task';
 }
