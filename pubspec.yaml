@@ -39,7 +39,17 @@ dependencies:
   # database
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  
+
+  # firebase
+  firebase_messaging: ^15.2.9
+  cloud_functions: ^5.6.1
+
+
+
+  firebase_core: ^3.15.1
+  cloud_firestore: ^5.6.11
+
+
   #generate RFC4122
   uuid: ^4.5.1
 

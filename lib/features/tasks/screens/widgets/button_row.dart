@@ -1,12 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
+import 'package:todo_app/models/task_model.dart';
 
 class ButtonsRowSection extends StatelessWidget {
-  const ButtonsRowSection({super.key});
+   ButtonsRowSection({super.key, this.onAdd, this.onDelete});
+  final VoidCallback? onAdd;
+  final VoidCallback? onDelete;
+
+  //--variables
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +32,7 @@ class ButtonsRowSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               side: BorderSide(color: AppColors.grey),
             ),
-            onPressed: () {},
+            onPressed: onDelete,
             animationDuration: Duration(seconds: 1),
             child: Row(
               children: [
@@ -48,8 +56,7 @@ class ButtonsRowSection extends StatelessWidget {
             elevation: 8,
             height: context.h * 0.06,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-
-            onPressed: () {},
+            onPressed: onAdd,
             animationDuration: Duration(seconds: 1),
             color: AppColors.primaryColor,
             child: Text(

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -10,8 +11,18 @@ import 'package:todo_app/features/models/task.dart';
 import 'package:todo_app/features/models/taskg.dart';
 import 'package:todo_app/features/tasks/screens/taskview.dart';
 
+import 'firebase_options.dart';
+
 Future<void> main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, // required if using FlutterFire CLI
+  );
+
   await Hive.initFlutter();
+
+  await messa
 
   //-- register hive adapter
   Hive.registerAdapter<Task>(TaskAdapter());
@@ -35,7 +46,6 @@ class BaseWidget extends InheritedWidget {
   BaseWidget({super.key, required super.child});
   final HiveDataStore dataStore = HiveDataStore();
 
-  @override
   Widget build(BuildContext context) {
     return const Placeholder();
   }
@@ -51,7 +61,6 @@ class BaseWidget extends InheritedWidget {
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) {
-    // TODO: implement updateShouldNotify
     throw false;
   }
 }

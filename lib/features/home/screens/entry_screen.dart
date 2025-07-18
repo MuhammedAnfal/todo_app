@@ -61,8 +61,7 @@ class _EntryScreenState extends ConsumerState<EntryScreen>
                 child: Transform(
                   transform:
                       Matrix4.identity()
-                        ..setEntry(3, 2, 0.001)
-                        ..rotateX((30 * math.pi) / 180),
+                        ..setEntry(3, 2, 0.001),
 
                   child: HomeView(),
                 ),

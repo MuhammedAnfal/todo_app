@@ -15,7 +15,7 @@ class TaskTile extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: context.h * 0.015),
       child: ListTile(
-        title: TextField(
+        title: TextFormField(
           controller: titleController,
           maxLines: !isDescripton ? 6 : null,
           style: GoogleFonts.poppins(color: Colors.black),
@@ -28,6 +28,7 @@ class TaskTile extends StatelessWidget {
               horizontal: context.w * 0.03,
               vertical: context.h * 0.02,
             ),
+
           ),
         ),
       ),
