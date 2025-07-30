@@ -3,7 +3,6 @@ import 'package:ftoast/ftoast.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/utils/app_str.dart';
-import 'package:todo_app/main.dart';
 
 class ImageConstants {
   static const String noTask = 'assets/lottie/no_task.json';

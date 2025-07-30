@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
-import 'package:todo_app/main.dart';
 
 class TaskViewAppBar extends StatefulWidget implements PreferredSizeWidget {
   const TaskViewAppBar({super.key});

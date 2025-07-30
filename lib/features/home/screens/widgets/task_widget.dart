@@ -5,7 +5,6 @@ import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/models/task.dart';
 import 'package:todo_app/features/tasks/screens/taskview.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
-import 'package:todo_app/main.dart';
 
 class TaskWidget extends StatefulWidget {
   const TaskWidget({super.key, required this.theme, required this.task});

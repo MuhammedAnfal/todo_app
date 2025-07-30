@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/models/side_menu_model.dart';
-import 'package:todo_app/main.dart';
 
 class SideBarMenuItems extends ConsumerStatefulWidget {
   const SideBarMenuItems({

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/tasks/screens/taskview.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
-import 'package:todo_app/main.dart';
 
 class AddTaskButton extends StatelessWidget {
   const AddTaskButton({super.key});

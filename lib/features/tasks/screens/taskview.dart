@@ -1,6 +1,5 @@
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as DatePicker show showDatePicker;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +13,7 @@ import 'package:todo_app/features/tasks/screens/widgets/task_view_app_bar.dart';
 import 'package:todo_app/features/tasks/screens/widgets/time_selection_tile.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
+import 'package:todo_app/main.dart';
 
 import '../../../models/task_model.dart';
 
@@ -145,13 +145,21 @@ class _TaskviewState extends ConsumerState<Taskview> {
                 } else if (ref.watch(selectedTime) == null) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please select time')));
                 } else {
+                    print(token);
+                    print('1');
                   TaskModel task = TaskModel(
+                    token: token??'',
+                    taskId: '',
                     selectedDate: ref.watch(selectedTime) ?? DateTime.now(),
                     selectedTime: ref.watch(selectedTime) ?? DateTime.now(),
                     taskTitle: widget.titleController.toString(),
                     taskDescription: widget.descriptionController.toString(),
                   );
-                  FirebaseFirestore.instance.collection('Tasks').add(task.toMap());
+                  FirebaseFirestore.instance.collection('tasks').add(task.toMap()).then((value) {
+                    value.update({
+                      'taskId':value.id
+                    });
+                  },);
                 }
               },
             ),

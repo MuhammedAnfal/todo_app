@@ -5,7 +5,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/home/screens/widgets/side_bar_menu_items.dart';
 import 'package:todo_app/features/models/side_menu_model.dart';
-import 'package:todo_app/main.dart';
 
 class CustomDrawer extends ConsumerStatefulWidget {
   const CustomDrawer({super.key});
@@ -64,7 +63,7 @@ class _CustomDrawerState extends ConsumerState<CustomDrawer> {
             Divider(),
             Consumer(
               builder: (context, ref, child) {
-                return Container(
+                return SizedBox(
                   height: context.h * 0.5,
                   child: ListView.builder(
                     itemCount: sideMenuItems.length,

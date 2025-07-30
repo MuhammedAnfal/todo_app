@@ -1,11 +1,13 @@
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/utils/constants/image_constants.dart/lottie_constants.dart';
-import 'package:todo_app/main.dart';
-import 'package:todo_app/main.dart' as context;
+
+import '../../../main.dart';
 
 class HomeAppBar extends ConsumerStatefulWidget implements PreferredSizeWidget {
   const HomeAppBar(this.animationController, {required this.sliderKey, super.key});
@@ -31,6 +33,8 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> with SingleTickerProvid
       vsync: this,
       duration: const Duration(seconds: 1),
     );
+
+
   }
 
   @override
@@ -80,8 +84,11 @@ class _HomeAppBarState extends ConsumerState<HomeAppBar> with SingleTickerProvid
                 Padding(
                   padding: EdgeInsets.only(right: context.w * 0.02),
                   child: GestureDetector(
-                    onTap: () {
-                      noTaskWarningDialog(context);
+                    onTap: () async {
+
+
+
+                      // noTaskWarningDialog(context);
                     },
                     child: Icon(
                       CupertinoIcons.trash,

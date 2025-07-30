@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +39,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-           formatDate(widget.selectedTime??null),
+           formatDate(widget.selectedTime),
               style: GoogleFonts.poppins(fontSize: context.w * 0.033, color: AppColors.grey),
             ),
             Container(

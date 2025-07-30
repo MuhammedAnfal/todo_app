@@ -1,18 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:todo_app/data/hive_data_store.dart';
 import 'package:todo_app/features/home/screens/entry_screen.dart';
-import 'package:todo_app/features/home/screens/home_view.dart';
-import 'package:todo_app/features/home/screens/slide_drawer.dart';
 import 'package:todo_app/features/models/task.dart';
 import 'package:todo_app/features/models/taskg.dart';
-import 'package:todo_app/features/tasks/screens/taskview.dart';
-
 import 'firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+String? token;
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +20,65 @@ Future<void> main() async {
 
   await Hive.initFlutter();
 
-  await messa
+  await NotificationService.instance.initialize();
+  FirebaseMessaging message = FirebaseMessaging.instance;
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("🟢 Foreground message: ${message.notification?.title}");
+
+    if (message.notification != null) {
+      NotificationService.instance.showNotification(
+        message.notification?.title ?? "No title",
+        message.notification?.body ?? "No body",
+      );
+    }
+  });
+
+
+  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    'default_channel', // ✅ Make sure this ID matches manifest if you add one
+    'Default',
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+
+  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('🔓 Notification permission granted.');
+  } else {
+    print('🔒 Notification permission denied.');
+  }
+
+  //-- create a background handler
+  Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
+    print("🔵 Background message: ${message.notification?.title}");
+
+    // Optional: show local notification
+    NotificationService.instance.showNotification(
+      message.notification?.title ?? "No title",
+      message.notification?.body ?? "No body",
+    );
+  }
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // void onDidReceiveNotificationResponse(NotificationResponse notificationResponse) async {
+  //   final String? payload = notificationResponse.payload;
+  //   if (notificationResponse.payload != null) {
+  //     debugPrint('notification payload: $payload');
+  //   }
+  //   await Navigator.push(
+  //     context,
+  //     MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
+  //   );
+  // }
+
+  //-- request for permission ( in ios required)
+  await message.requestPermission();
+   token = await message.getToken();
+
+
 
   //-- register hive adapter
   Hive.registerAdapter<Task>(TaskAdapter());
@@ -31,13 +87,13 @@ Future<void> main() async {
   var box = await Hive.openBox<Task>(HiveDataStore.boxName);
 
   //-- delete data from previous day
-  box.values.forEach((element) {
+  for (var element in box.values) {
     if (element.createdTime.day != DateTime.now().day) {
       element.delete();
     } else {
       //-- do nothing
     }
-  });
+  }
   runApp(BaseWidget(child: const MyApp()));
 }
 
@@ -103,5 +159,42 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class NotificationService {
+  static final NotificationService instance = NotificationService._();
+  final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+
+  NotificationService._();
+
+  Future<void> initialize() async {
+    const AndroidInitializationSettings androidSettings =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final DarwinInitializationSettings iOSSettings =
+    DarwinInitializationSettings();
+
+    final InitializationSettings initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iOSSettings,
+    );
+
+    await _plugin.initialize(initSettings);
+  }
+
+  Future<void> showNotification(String title, String body) async {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'default_channel',
+      'Default',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+    );
+
+    await _plugin.show(0, title, body, notificationDetails);
   }
 }

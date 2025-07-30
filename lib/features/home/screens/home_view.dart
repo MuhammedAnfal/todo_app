@@ -1,4 +1,6 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,15 +9,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/extension/space_extension.dart';
-import 'package:todo_app/features/home/screens/home_app_bar.dart';
-import 'package:todo_app/features/home/screens/slide_drawer.dart';
 import 'package:todo_app/features/home/screens/widgets/add_task_button.dart';
 import 'package:todo_app/features/home/screens/widgets/task_widget.dart';
 import 'package:todo_app/features/models/task.dart';
-import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
 import 'package:todo_app/features/utils/constants/image_constants.dart/lottie_constants.dart';
-import 'package:todo_app/main.dart';
+
+import '../../../main.dart';
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
@@ -65,8 +65,22 @@ class _HomeViewState extends ConsumerState<HomeView> {
                               Padding(
                                 padding: EdgeInsets.only(right: context.w * 0.02),
                                 child: GestureDetector(
-                                  onTap: () {
-                                    noTaskWarningDialog(context);
+                                  onTap: () async {
+                                    print('object');
+                                    try {
+                                      final functions = FirebaseFunctions.instance;
+                                      final result = await functions.httpsCallable('sendNotification').call({
+                                        'title': 'hi guys',
+                                        'body': 'this is the notification',
+                                        'token': token,
+                                      });
+                                      print(token);
+
+                                      print('Function Response: ${result.data}');
+                                    } catch (e) {
+                                      print('Function Error: $e');
+                                    }
+                                    // noTaskWarningDialog(context);
                                   },
                                   child: Icon(
                                     CupertinoIcons.trash,

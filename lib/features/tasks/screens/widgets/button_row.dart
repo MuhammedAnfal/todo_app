@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
-import 'package:todo_app/models/task_model.dart';
 
 class ButtonsRowSection extends StatelessWidget {
    ButtonsRowSection({super.key, this.onAdd, this.onDelete});
