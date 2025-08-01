@@ -5,17 +5,20 @@ import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
 
 class TaskTile extends StatelessWidget {
-  const TaskTile({super.key, required this.titleController, this.isDescripton = false});
+  const TaskTile({super.key, required this.titleController, this.isDescripton = false, this.onFieldSubmitted, this.onChanged});
 
   final TextEditingController? titleController;
   final bool isDescripton;
 
+  final Function(String)? onFieldSubmitted;
+  final Function(String)? onChanged;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: context.h * 0.015),
       child: ListTile(
         title: TextFormField(
+
           controller: titleController,
           maxLines: !isDescripton ? 6 : null,
           style: GoogleFonts.poppins(color: Colors.black),
@@ -30,6 +33,8 @@ class TaskTile extends StatelessWidget {
             ),
 
           ),
+          onFieldSubmitted: onFieldSubmitted,
+          onChanged: onChanged,
         ),
       ),
     );

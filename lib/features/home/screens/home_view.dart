@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +13,6 @@ import 'package:todo_app/features/home/screens/widgets/task_widget.dart';
 import 'package:todo_app/features/models/task.dart';
 import 'package:todo_app/features/utils/app_str.dart';
 import 'package:todo_app/features/utils/constants/image_constants.dart/lottie_constants.dart';
-
 import '../../../main.dart';
 
 class HomeView extends ConsumerStatefulWidget {

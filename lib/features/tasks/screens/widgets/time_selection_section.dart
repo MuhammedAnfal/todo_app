@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
 
-class DateSelectionTile extends StatefulWidget {
-  const DateSelectionTile({super.key, this.ontap, required this.selectedDate});
+class TimeSelectionTile extends StatefulWidget {
+  const TimeSelectionTile({super.key, this.ontap, required this.selectedTime});
   final VoidCallback? ontap;
-  final DateTime? selectedDate;
+  final String selectedTime;
 
   @override
-  State<DateSelectionTile> createState() => _DateSelectionTileState();
+  State<TimeSelectionTile> createState() => _DateSelectionTileState();
 }
 
-class _DateSelectionTileState extends State<DateSelectionTile> {
-  formatDate(DateTime? selectedDate){
-    if(selectedDate!=null){
-    return  DateFormat("hh-mm").format(selectedDate);
-    }else {
-      return"";
-    }}
+class _DateSelectionTileState extends State<TimeSelectionTile> {
+
+  // formatDate(DateTime? selectedTime){
+  //   if(selectedTime!=null){
+  //   return  DateFormat("hh-mm").format(selectedTime);
+  //   }else {
+  //     return"";
+  //   }}
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class _DateSelectionTileState extends State<DateSelectionTile> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              formatDate(widget.selectedDate),
+              AppStrings.timeString,
               style: GoogleFonts.poppins(fontSize: context.w * 0.033, color: AppColors.grey),
             ),
             Container(
@@ -51,7 +53,7 @@ class _DateSelectionTileState extends State<DateSelectionTile> {
                 color: Colors.grey.shade300,
               ),
               child: Text(
-                AppStrings.dateString,
+              widget.selectedTime.isEmpty ? AppStrings.timeString: widget.selectedTime.toString() ,
                 style: GoogleFonts.poppins(
                   fontSize: context.w * 0.035,
                   color: AppColors.black,

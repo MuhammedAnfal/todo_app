@@ -7,7 +7,7 @@ import 'package:todo_app/features/tasks/screens/taskview.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 
 class TaskWidget extends StatefulWidget {
-  const TaskWidget({super.key, required this.theme, required this.task});
+  const  TaskWidget({super.key, required this.theme, required this.task});
 
   //-- variables
   final TextTheme theme;
@@ -56,7 +56,7 @@ class _TaskWidgetState extends State<TaskWidget> {
       child: AnimatedContainer(
         margin: EdgeInsets.symmetric(horizontal: context.w * 0.05, vertical: context.h * 0.01),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.task.isCompleted? const Color.fromARGB(154,119, 144, 229) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: const [
             BoxShadow(color: Colors.grey, blurRadius: 5, offset: Offset(0, 3)),
@@ -123,7 +123,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                         style: GoogleFonts.poppins(
                           textStyle: widget.theme.displaySmall,
                           fontSize: context.w * 0.03,
-                          color: Colors.grey,
+                          color:widget.task.isCompleted? AppColors.white: Colors.grey,
                         ),
                       ),
                       Text(
@@ -131,7 +131,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                         style: GoogleFonts.poppins(
                           textStyle: widget.theme.displaySmall,
                           fontSize: context.w * 0.03,
-                          color: Colors.grey,
+                          color: widget.task.isCompleted? AppColors.white: Colors.grey,
                         ),
                       ),
                     ],

@@ -5,23 +5,23 @@ import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
 
 class ButtonsRowSection extends StatelessWidget {
-   ButtonsRowSection({super.key, this.onAdd, this.onDelete});
+   ButtonsRowSection({super.key, this.onAdd, this.onDelete, required this.isAlreadyExist});
   final VoidCallback? onAdd;
   final VoidCallback? onDelete;
+  final bool isAlreadyExist;
 
   //--variables
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: context.h * 0.03),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: isAlreadyExist? MainAxisAlignment.center : MainAxisAlignment.spaceAround,
         children: [
           //-- delete button
-          MaterialButton(
+       isAlreadyExist? Container() :   MaterialButton(
             elevation: 4,
             height: context.h * 0.06,
             color: Colors.white38,

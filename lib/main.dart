@@ -34,21 +34,7 @@ Future<void> main() async {
     }
   });
 
-
-  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-    'default_channel', // ✅ Make sure this ID matches manifest if you add one
-    'Default',
-    importance: Importance.max,
-    priority: Priority.high,
-  );
-
   NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
-
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print('🔓 Notification permission granted.');
-  } else {
-    print('🔒 Notification permission denied.');
-  }
 
   //-- create a background handler
   Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {

@@ -32,18 +32,18 @@ class Task extends HiveObject {
 
   //-- create new taks
   factory Task.create({
-    required String? id,
+     String? id,
     required String? title,
     required String? description,
     required DateTime? createdTime,
-    required DateTime? createdAtDate,
-    required bool? isCompleted,
+    required DateTime? createdDate,
+     bool? isCompleted,
   }) => Task(
     id: Uuid().v1(),
     title: title ?? '',
     description: description ?? '',
     createdTime: createdTime ?? DateTime.now(),
-    createdAtDate: createdAtDate ?? DateTime.now(),
+    createdAtDate: createdDate ?? DateTime.now(),
     isCompleted: isCompleted ?? false,
   );
 }

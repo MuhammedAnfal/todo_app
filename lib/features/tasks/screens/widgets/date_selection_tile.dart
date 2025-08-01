@@ -5,21 +5,21 @@ import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 import 'package:todo_app/features/utils/app_str.dart';
 
-class TimeSelectionTile extends StatefulWidget {
-  const TimeSelectionTile({super.key, this.ontap, required this.selectedTime});
+class DateSelectionTile extends StatefulWidget {
+  const DateSelectionTile({super.key, this.ontap, required this.selectedDate});
   final VoidCallback? ontap;
-  final DateTime? selectedTime;
+  final DateTime? selectedDate;
 
   @override
-  State<TimeSelectionTile> createState() => _TimeSelectionTileState();
+  State<DateSelectionTile> createState() => _DateSelectionTileState();
 }
 
-class _TimeSelectionTileState extends State<TimeSelectionTile> {
-  formatDate(DateTime? selectedTime){
-    if(selectedTime!=null){
-   return   DateFormat('dd-MM--yy').format(selectedTime);
+class _DateSelectionTileState extends State<DateSelectionTile> {
+  formatDate(DateTime? selectedDate){
+    if(selectedDate!=null){
+   return   DateFormat.yMMMEd().format(selectedDate);
     } else{
-      return"";
+      return  AppStrings.dateString;
     }
   }
 
@@ -39,7 +39,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-           formatDate(widget.selectedTime),
+              AppStrings.dateString,
               style: GoogleFonts.poppins(fontSize: context.w * 0.033, color: AppColors.grey),
             ),
             Container(
@@ -52,7 +52,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
                 color: Colors.grey.shade300,
               ),
               child: Text(
-                AppStrings.timeString,
+                  formatDate(widget.selectedDate) ,
                 style: GoogleFonts.poppins(
                   fontSize: context.w * 0.035,
                   color: AppColors.black,
