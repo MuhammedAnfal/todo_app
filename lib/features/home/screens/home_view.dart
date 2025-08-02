@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/extension/space_extension.dart';
@@ -24,14 +25,41 @@ class HomeView extends ConsumerStatefulWidget {
 
 class _HomeViewState extends ConsumerState<HomeView> {
   //-- variables
-  final List<int> tasks = [2];
   final GlobalKey<SliderDrawerState> sliderKey = GlobalKey<SliderDrawerState>();
+  final doneTasks = StateProvider((ref) => 0);
+
+  //-- check how many tasks are done
+  int checkDoneTask(List<Task> taskList) {
+    Future.delayed(Duration(milliseconds: 500), () {
+      for (var a in taskList) {
+        if (a.isCompleted) {
+          ref.watch(doneTasks.notifier).state++;
+        }
+      }
+    });
+    return ref.read(doneTasks);
+  }
 
   @override
   Widget build(BuildContext context) {
+    // -- checkValueOfCircleIndicator
+    dynamic valueOfCircleIndicator(List<Task> taskList) {
+      if (taskList.isEmpty) {
+        return 0;
+      } else {
+        return taskList.length;
+      }
+    }
+
+    final base = BaseWidget.of(context);
     final theme = Theme.of(context).textTheme;
-    return Consumer(
-      builder: (context, ref, child) {
+
+    return ValueListenableBuilder(
+      valueListenable: base.dataStore.listenToTask(),
+      builder: (context, Box<Task> box, child) {
+        var tasks = box.values.toList();
+        tasks.sort((a, b) => b.createdAtDate.compareTo(a.createdAtDate));
+
         //-- slide drawer
         return Scaffold(
           backgroundColor: Colors.white,
@@ -42,11 +70,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
               height: context.h,
               width: context.w,
               child: Padding(
-                padding: EdgeInsets.only(
-                  right: context.w * 0.02,
-                  left: context.w * 0.02,
-                  bottom: context.w * 0.02,
-                ),
+                padding: EdgeInsets.only(right: context.w * 0.02, left: context.w * 0.02, bottom: context.w * 0.02),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -64,27 +88,19 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                 padding: EdgeInsets.only(right: context.w * 0.02),
                                 child: GestureDetector(
                                   onTap: () async {
-                                    print('object');
-                                    try {
-                                      final functions = FirebaseFunctions.instance;
-                                      final result = await functions.httpsCallable('sendNotification').call({
-                                        'title': 'hi guys',
-                                        'body': 'this is the notification',
-                                        'token': token,
-                                      });
-                                      print(token);
-
-                                      print('Function Response: ${result.data}');
-                                    } catch (e) {
-                                      print('Function Error: $e');
-                                    }
-                                    // noTaskWarningDialog(context);
+                                    base.dataStore.box.isEmpty ? noTaskWarningDialog(context) : deleteAllTaskDialog(context);
+                                    // try {
+                                    //   final functions = FirebaseFunctions.instance;
+                                    //   final result = await functions.httpsCallable('sendNotification').call({
+                                    //     'title': 'hi guys',
+                                    //     'body': 'this is the notification',
+                                    //     'token': token,
+                                    //   });
+                                    // } catch (e) {
+                                    //   noTaskWarningDialog(context);
+                                    // }
                                   },
-                                  child: Icon(
-                                    CupertinoIcons.trash,
-                                    size: context.w * 0.06,
-                                    color: Colors.black,
-                                  ),
+                                  child: Icon(CupertinoIcons.trash, size: context.w * 0.06, color: Colors.black),
                                 ),
                               ),
                             ],
@@ -101,7 +117,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             children: [
                               //-- loader
                               CircularProgressIndicator(
-                                value: 1 / 3,
+                                value: checkDoneTask(tasks) / valueOfCircleIndicator(tasks),
                                 backgroundColor: Colors.grey,
                                 valueColor: const AlwaysStoppedAnimation(Colors.blue),
                               ),
@@ -112,7 +128,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                 children: [
                                   Text(AppStrings.mainTitle, style: theme.displayLarge),
                                   3.h,
-                                  Text('1 of 3 task', style: theme.titleMedium),
+                                  Text('${checkDoneTask(tasks)} of ${tasks.length} task', style: theme.titleMedium),
                                 ],
                               ),
                             ],
@@ -121,12 +137,9 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       ),
 
                       //-- divider
-                      Padding(
-                        padding: EdgeInsets.only(top: context.h * 0.01),
-                        child: Divider(thickness: 2, indent: 60),
-                      ),
+                      Padding(padding: EdgeInsets.only(top: context.h * 0.01), child: Divider(thickness: 2, indent: 60)),
 
-                      //-- tasks
+                      //-- task
                       SizedBox(
                         width: context.w,
                         height: context.h * 0.7,
@@ -139,10 +152,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                       child: SizedBox(
                                         height: context.h * 0.3,
                                         width: context.w,
-                                        child: Lottie.asset(
-                                          ImageConstants.noTask,
-                                          animate: tasks.isNotEmpty ? false : true,
-                                        ),
+                                        child: Lottie.asset(ImageConstants.noTask, animate: tasks.isNotEmpty ? false : true),
                                       ),
                                     ),
                                     FadeInUp(from: 30, child: Text(AppStrings.doneAllTask)),
@@ -152,11 +162,11 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: tasks.length,
                                   itemBuilder: (context, index) {
+                                    var task = tasks[index];
                                     //-- swipe to delete task
                                     return Dismissible(
                                       onDismissed: (_) {
-                                        tasks.removeAt(index);
-                                        setState(() {});
+                                        base.dataStore.deleteTask(task: task);
                                       },
                                       background: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -167,30 +177,17 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                           //-- text
                                           Padding(
                                             padding: EdgeInsets.only(left: context.w * 0.010),
-                                            child: Text(
-                                              AppStrings.deletedTask,
-                                              style: GoogleFonts.poppins(color: Colors.grey),
-                                            ),
+                                            child: Text(AppStrings.deletedTask, style: GoogleFonts.poppins(color: Colors.grey)),
                                           ),
                                         ],
                                       ),
 
                                       //-- swiping direction
                                       direction: DismissDirection.horizontal,
-                                      key: Key(index.toString()),
+                                      key: Key(task.id.toString()),
 
                                       //-- tile widget
-                                      child: TaskWidget(
-                                        theme: theme,
-                                        task: Task(
-                                          id: '1',
-                                          title: 'Home Task',
-                                          description: "cleaning the room",
-                                          createdTime: DateTime.now(),
-                                          createdAtDate: DateTime.now(),
-                                          isCompleted: false,
-                                        ),
-                                      ),
+                                      child: TaskWidget(theme: theme, task: task),
                                     );
                                   },
                                 ),

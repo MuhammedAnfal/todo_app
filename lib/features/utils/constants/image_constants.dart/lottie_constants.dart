@@ -3,6 +3,8 @@ import 'package:ftoast/ftoast.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/utils/app_str.dart';
+import '../../../../main.dart';
+import '../../app_str.dart';
 
 class ImageConstants {
   static const String noTask = 'assets/lottie/no_task.json';
@@ -59,7 +61,7 @@ deleteAllTaskDialog(BuildContext context) {
     },
     onTapConfirm: () {
       //-- clear all the tasks
-      // BaseWidget.of(context).dataStore.box.clear();
+      BaseWidget.of(context).dataStore.box.clear();
       Navigator.of(context).pop();
     },
     panaraDialogType: PanaraDialogType.warning,

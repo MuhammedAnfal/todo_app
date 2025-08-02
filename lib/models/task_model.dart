@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class TaskModel{
-  final String selectedTime;
+  final DateTime selectedTime;
   final DateTime selectedDate;
   final String taskTitle;
   final String taskDescription;

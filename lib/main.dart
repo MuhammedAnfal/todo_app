@@ -34,7 +34,6 @@ Future<void> main() async {
     }
   });
 
-  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
 
   //-- create a background handler
   Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {

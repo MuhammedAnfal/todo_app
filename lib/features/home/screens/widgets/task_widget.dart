@@ -7,7 +7,7 @@ import 'package:todo_app/features/tasks/screens/taskview.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 
 class TaskWidget extends StatefulWidget {
-  const  TaskWidget({super.key, required this.theme, required this.task});
+  const TaskWidget({super.key, required this.theme, required this.task});
 
   //-- variables
   final TextTheme theme;
@@ -40,32 +40,39 @@ class _TaskWidgetState extends State<TaskWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return GestureDetector(
       onTap: () {
+        //-- navigating home task to single task pages
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => Taskview(
-                  descriptionController: subTitleController,
-                  titleController: titleController,
-                ),
+            builder: (context) => Taskview(
+                task: widget.task,
+                descriptionController: subTitleController, titleController: titleController),
           ),
         );
       },
       child: AnimatedContainer(
         margin: EdgeInsets.symmetric(horizontal: context.w * 0.05, vertical: context.h * 0.01),
         decoration: BoxDecoration(
-          color: widget.task.isCompleted? const Color.fromARGB(154,119, 144, 229) : Colors.white,
+          color: widget.task.isCompleted ? const Color.fromARGB(154, 119, 144, 229) : Colors.white,
           borderRadius: BorderRadius.circular(15),
-          boxShadow: const [
-            BoxShadow(color: Colors.grey, blurRadius: 5, offset: Offset(0, 3)),
-          ],
+          boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 5, offset: Offset(0, 3))],
         ),
         duration: Duration(milliseconds: 300),
         child: ListTile(
           leading: GestureDetector(
-            onTap: () {},
+            onTap: () {
+
+              //-- saving task
+              widget.task.save();
+
+              //-- changing the values while taping
+              widget.task.isCompleted = !widget.task.isCompleted;
+
+            },
             child: Padding(
               padding: EdgeInsets.only(bottom: context.h * 0.03),
               child: AnimatedContainer(
@@ -123,7 +130,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                         style: GoogleFonts.poppins(
                           textStyle: widget.theme.displaySmall,
                           fontSize: context.w * 0.03,
-                          color:widget.task.isCompleted? AppColors.white: Colors.grey,
+                          color: widget.task.isCompleted ? AppColors.white : Colors.grey,
                         ),
                       ),
                       Text(
@@ -131,7 +138,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                         style: GoogleFonts.poppins(
                           textStyle: widget.theme.displaySmall,
                           fontSize: context.w * 0.03,
-                          color: widget.task.isCompleted? AppColors.white: Colors.grey,
+                          color: widget.task.isCompleted ? AppColors.white : Colors.grey,
                         ),
                       ),
                     ],

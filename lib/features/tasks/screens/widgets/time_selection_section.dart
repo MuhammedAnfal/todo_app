@@ -9,7 +9,7 @@ import 'package:todo_app/features/utils/app_str.dart';
 class TimeSelectionTile extends StatefulWidget {
   const TimeSelectionTile({super.key, this.ontap, required this.selectedTime});
   final VoidCallback? ontap;
-  final String selectedTime;
+  final DateTime selectedTime;
 
   @override
   State<TimeSelectionTile> createState() => _DateSelectionTileState();
@@ -17,12 +17,12 @@ class TimeSelectionTile extends StatefulWidget {
 
 class _DateSelectionTileState extends State<TimeSelectionTile> {
 
-  // formatDate(DateTime? selectedTime){
-  //   if(selectedTime!=null){
-  //   return  DateFormat("hh-mm").format(selectedTime);
-  //   }else {
-  //     return"";
-  //   }}
+  formatDate(DateTime? selectedTime){
+    if(selectedTime!=null){
+    return  DateFormat("hh-mm").format(selectedTime);
+    }else {
+      return"";
+    }}
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _DateSelectionTileState extends State<TimeSelectionTile> {
                 color: Colors.grey.shade300,
               ),
               child: Text(
-              widget.selectedTime.isEmpty ? AppStrings.timeString: widget.selectedTime.toString() ,
+              widget.selectedTime == null ? AppStrings.timeString:formatDate(widget.selectedTime) ,
                 style: GoogleFonts.poppins(
                   fontSize: context.w * 0.035,
                   color: AppColors.black,
