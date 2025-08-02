@@ -22,7 +22,8 @@ import 'package:todo_app/main.dart';
 import '../../../models/task_model.dart';
 
 class Taskview extends ConsumerStatefulWidget {
-  const Taskview( {super.key, this.task, this.titleController, this.descriptionController});
+  const Taskview({super.key, this.task, this.titleController, this.descriptionController});
+
   final Task? task;
   final TextEditingController? titleController;
   final TextEditingController? descriptionController;
@@ -50,29 +51,44 @@ class _TaskviewState extends ConsumerState<Taskview> {
   //-- function for creating or updating tasks
   dynamic isTaskAlreadyExistUpdateOtherWiseCreate() {
     if (widget.titleController?.text != null && widget.descriptionController?.text != null) {
-      print('if working ');
       try {
         //-- updating the current task
         widget.titleController?.text = ref.watch(title);
         widget.descriptionController?.text = ref.watch(description);
+        widget.task?.save();
         Navigator.pop(context);
-
       } catch (e) {
         updateWarning(context);
       }
     } else {
       //-- create new task
-      print('else  working ');
-      if (ref.watch(title) != ''  && ref.watch(description) != '') {
-        print('else if');
+      if (ref.watch(title) != '' && ref.watch(description) != '') {
         var task = Task.create(
           title: ref.watch(title),
           description: ref.watch(description),
           createdTime: ref.watch(selectedTime),
           createdDate: ref.watch(selectedDate),
         );
+
         //-- we are adding task in to db using inherited widget
         BaseWidget.of(context).dataStore.addTask(task: task);
+
+
+
+        //-- adding to firebase
+        TaskModel addingTask = TaskModel(
+          token: token ?? '',
+          taskId: '',
+          selectedDate: ref.watch(selectedDate) ?? DateTime.now(),
+          selectedTime: ref.watch(selectedTime) ?? DateTime.now(),
+          taskTitle: ref.watch(title),
+          taskDescription: ref.watch(description),
+        );
+
+        FirebaseFirestore.instance.collection('tasks').add(addingTask.toMap()).then((value) {
+          value.update({'taskId': value.id});
+        });
+
         Navigator.pop(context);
       } else {
         emptyWarning(context);
@@ -81,9 +97,20 @@ class _TaskviewState extends ConsumerState<Taskview> {
   }
 
   //-- delete task
-  deleteTask(){
+  deleteTask() {
     return widget.task?.delete();
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.watch(title.notifier).state = (widget.titleController?.text.toString() ?? "");
+      ref.watch(description.notifier).state = (widget.descriptionController?.text.toString() ?? "");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,7 +207,8 @@ class _TaskviewState extends ConsumerState<Taskview> {
                   pickerTitle: Text('sss', style: GoogleFonts.poppins(color: AppColors.white, fontWeight: FontWeight.w500)),
                 ).show(context);
               },
-              selectedTime: ref.watch(selectedTime)?? DateTime.now()),
+              selectedTime: ref.watch(selectedTime) ?? DateTime.now(),
+            ),
 
             Padding(
               padding: EdgeInsets.only(top: context.h * 0.03),
@@ -228,26 +256,16 @@ class _TaskviewState extends ConsumerState<Taskview> {
                       } else if (ref.watch(selectedTime) == null) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please select time')));
                       } else {
-                        if(ref.watch(title)!=''&& ref.watch(description)!='') {
+                        if (ref.watch(title) != '' && ref.watch(description) != '' ||
+                            widget.titleController?.text != null && widget.descriptionController?.text != null) {
                           isTaskAlreadyExistUpdateOtherWiseCreate();
-                          TaskModel task = TaskModel(
-                            token: token ?? '',
-                            taskId: '',
-                            selectedDate: ref.watch(selectedDate) ?? DateTime.now(),
-                            selectedTime: ref.watch(selectedTime) ?? DateTime.now(),
-                            taskTitle: ref.watch(title),
-                            taskDescription: ref.watch(description),
-                          );
-                          FirebaseFirestore.instance.collection('tasks').add(task.toMap()).then((value) {
-                            value.update({'taskId': value.id});
-                          });
                         }
                       }
                     },
                     animationDuration: Duration(seconds: 1),
                     color: AppColors.primaryColor,
                     child: Text(
-                     isTaskExist()?  AppStrings.addTaskString.toUpperCase():AppStrings.updateCurrentTask,
+                      isTaskExist() ? AppStrings.addTaskString.toUpperCase() : AppStrings.updateCurrentTask,
                       style: GoogleFonts.poppins(color: AppColors.white, fontWeight: FontWeight.w600),
                     ),
                   ),

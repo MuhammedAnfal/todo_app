@@ -6,18 +6,18 @@ import 'package:todo_app/features/models/task.dart';
 import 'package:todo_app/features/tasks/screens/taskview.dart';
 import 'package:todo_app/features/utils/app_colors.dart';
 
-class TaskWidget extends StatefulWidget {
-  const TaskWidget({super.key, required this.theme, required this.task});
+class TaskDetalisCard extends StatefulWidget {
+  const TaskDetalisCard({super.key, required this.theme, required this.task});
 
   //-- variables
   final TextTheme theme;
   final Task task;
 
   @override
-  State<TaskWidget> createState() => _TaskWidgetState();
+  State<TaskDetalisCard> createState() => _TaskDetalisCardState();
 }
 
-class _TaskWidgetState extends State<TaskWidget> {
+class _TaskDetalisCardState extends State<TaskDetalisCard> {
   //-- variables
   TextEditingController titleController = TextEditingController();
   TextEditingController subTitleController = TextEditingController();
@@ -31,17 +31,7 @@ class _TaskWidgetState extends State<TaskWidget> {
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    titleController.dispose();
-    subTitleController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-
-
     return GestureDetector(
       onTap: () {
         //-- navigating home task to single task pages

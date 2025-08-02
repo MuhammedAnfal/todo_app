@@ -10,7 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:todo_app/features/extension/size_extension.dart';
 import 'package:todo_app/features/extension/space_extension.dart';
 import 'package:todo_app/features/home/screens/widgets/add_task_button.dart';
-import 'package:todo_app/features/home/screens/widgets/task_widget.dart';
+import 'package:todo_app/features/home/screens/widgets/task_card_details.dart';
 import 'package:todo_app/features/models/task.dart';
 import 'package:todo_app/features/utils/app_str.dart';
 import 'package:todo_app/features/utils/constants/image_constants.dart/lottie_constants.dart';
@@ -31,25 +31,29 @@ class _HomeViewState extends ConsumerState<HomeView> {
   //-- check how many tasks are done
   int checkDoneTask(List<Task> taskList) {
     Future.delayed(Duration(milliseconds: 500), () {
+      ref.watch(doneTasks.notifier).state = 0;
       for (var a in taskList) {
         if (a.isCompleted) {
-          ref.watch(doneTasks.notifier).state++;
+          ref.read(doneTasks.notifier).state++;
         }
       }
     });
-    return ref.read(doneTasks);
+    return ref.watch(doneTasks);
   }
+
+  // -- checkValueOfCircleIndicator
+  dynamic valueOfCircleIndicator(List<Task>taskList) {
+    if (taskList.isEmpty) {
+      return 3;
+    } else {
+      return taskList.length;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    // -- checkValueOfCircleIndicator
-    dynamic valueOfCircleIndicator(List<Task> taskList) {
-      if (taskList.isEmpty) {
-        return 0;
-      } else {
-        return taskList.length;
-      }
-    }
+
 
     final base = BaseWidget.of(context);
     final theme = Theme.of(context).textTheme;
@@ -58,6 +62,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       valueListenable: base.dataStore.listenToTask(),
       builder: (context, Box<Task> box, child) {
         var tasks = box.values.toList();
+
         tasks.sort((a, b) => b.createdAtDate.compareTo(a.createdAtDate));
 
         //-- slide drawer
@@ -117,7 +122,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             children: [
                               //-- loader
                               CircularProgressIndicator(
-                                value: checkDoneTask(tasks) / valueOfCircleIndicator(tasks),
+                                value: (checkDoneTask(tasks) / valueOfCircleIndicator(tasks))??0,
                                 backgroundColor: Colors.grey,
                                 valueColor: const AlwaysStoppedAnimation(Colors.blue),
                               ),
@@ -187,7 +192,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                       key: Key(task.id.toString()),
 
                                       //-- tile widget
-                                      child: TaskWidget(theme: theme, task: task),
+                                      child: TaskDetalisCard(theme: theme, task: task),
                                     );
                                   },
                                 ),
